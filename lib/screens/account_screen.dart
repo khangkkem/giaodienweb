@@ -1,6 +1,11 @@
 // lib/screens/account_screen.dart
 
 import 'package:flutter/material.dart';
+// 1. IMPORT MÀN HÌNH CÀI ĐẶT MỚI
+import 'settings_screen.dart';
+// IMPORT MÀN HÌNH ĐĂNG NHẬP/ĐĂNG KÝ (GIẢ ĐỊNH TÊN FILE LÀ auth_screen.dart)
+// Hãy đảm bảo file này tồn tại trong thư mục screens/
+import 'auth_screen.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -26,9 +31,20 @@ class AccountScreen extends StatelessWidget {
 
                   const SizedBox(height: 15),
                   _buildSectionTitle('Thông Tin Tài Khoản'),
-                  _buildAccountItem(context, Icons.person_outline, 'Chỉnh sửa hồ sơ', () {}),
-                  _buildAccountItem(context, Icons.location_on_outlined, 'Sổ địa chỉ', () {}),
-                  _buildAccountItem(context, Icons.settings_outlined, 'Cài đặt chung', () {}),
+
+                  // SỬA LOGIC ONTAP cho Cài đặt chung
+                  _buildAccountItem(
+                    context,
+                    Icons.settings_outlined,
+                    'Cài đặt chung',
+                        () {
+                      // ĐIỀU HƯỚNG TỚI MÀN HÌNH SETTINGS MỚI
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                      );
+                    },
+                  ),
 
                   const SizedBox(height: 20),
                   // --- 3. Nút Đăng xuất ---
@@ -42,7 +58,7 @@ class AccountScreen extends StatelessWidget {
     );
   }
 
-  // Widget Header thông tin người dùng
+  // Widget Header thông tin người dùng (Không thay đổi)
   Widget _buildProfileHeader(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -53,20 +69,20 @@ class AccountScreen extends StatelessWidget {
           BoxShadow(color: Colors.deepPurple.shade900.withOpacity(0.3), blurRadius: 10),
         ],
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 40,
             backgroundColor: Colors.white,
             child: Icon(Icons.person, size: 50, color: Colors.deepPurple),
           ),
-          const SizedBox(height: 10),
-          const Text(
+          SizedBox(height: 10),
+          Text(
             'Xin chào, Khách hàng!',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           Text(
             'customer@example.com',
             style: TextStyle(fontSize: 16, color: Colors.white70),
@@ -76,7 +92,7 @@ class AccountScreen extends StatelessWidget {
     );
   }
 
-  // Widget Tiêu đề phân mục
+  // Widget Tiêu đề phân mục (Không thay đổi)
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 8.0, left: 4),
@@ -94,7 +110,7 @@ class AccountScreen extends StatelessWidget {
     );
   }
 
-  // Widget Tùy chọn tài khoản (Profile Item)
+  // Widget Tùy chọn tài khoản (Đã sửa logic onTap để không hiển thị SnackBar khi điều hướng)
   Widget _buildAccountItem(BuildContext context, IconData icon, String title, VoidCallback onTap) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
@@ -105,16 +121,19 @@ class AccountScreen extends StatelessWidget {
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Chuyển đến $title')),
-          );
+          // Bỏ SnackBar mặc định nếu item là 'Cài đặt chung'
+          if (title != 'Cài đặt chung') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Chuyển đến $title')),
+            );
+          }
           onTap();
         },
       ),
     );
   }
 
-  // Widget Nút Đăng xuất
+  // Widget Nút Đăng xuất (ĐÃ THAY THẾ LOGIC ĐIỀU HƯỚNG)
   Widget _buildLogoutButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
@@ -127,9 +146,18 @@ class AccountScreen extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
         onPressed: () {
-          // TODO: Chuyển hướng về màn hình Đăng nhập (AuthScreen)
+          // 1. Hiển thị thông báo đăng xuất
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Đang đăng xuất...')),
+          );
+
+          // 2. Điều hướng về màn hình Đăng nhập (AuthScreen) và xóa tất cả route cũ
+          // THAY THẾ 'AuthScreen' bằng tên class màn hình Đăng nhập/Đăng ký của bạn
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => const AuthScreen(),
+            ),
+                (Route<dynamic> route) => false, // Xóa tất cả các route trước đó
           );
         },
       ),

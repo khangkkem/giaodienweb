@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import '../data/cart_repository.dart';
+// THÊM IMPORT MÀN HÌNH MỚI
+import 'address_edit_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final List<CartItem> cartItems;
@@ -79,7 +81,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  // Widget Card Địa chỉ Giao hàng
+  // Widget Card Địa chỉ Giao hàng (ĐÃ SỬA LOGIC ONTAP)
   Widget _buildShippingAddressCard() {
     return Card(
       elevation: 2,
@@ -97,7 +99,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
         trailing: const Icon(Icons.edit, color: Colors.grey),
         onTap: () {
-          // TODO: Điều hướng đến màn hình chỉnh sửa địa chỉ
+          // THÊM LOGIC ĐIỀU HƯỚNG TỚI MÀN HÌNH CHỈNH SỬA
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddressEditScreen()),
+          );
         },
       ),
     );

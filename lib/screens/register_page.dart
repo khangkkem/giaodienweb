@@ -11,6 +11,9 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+
+  // 1. THÊM CONTROLLER CHO TÊN TÀI KHOẢN (Username)
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
@@ -18,6 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void dispose() {
     // Luôn dispose controller khi Widget bị hủy
+    _usernameController.dispose(); // Cập nhật dispose
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -46,6 +50,19 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
                 ),
                 const SizedBox(height: 30),
+
+                // 2. TRƯỜNG TÊN TÀI KHOẢN MỚI
+                TextFormField(
+                  controller: _usernameController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    labelText: 'Tên tài khoản (Ví dụ: HoTen)',
+                    prefixIcon: const Icon(Icons.person),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  validator: (val) => val!.isEmpty ? 'Tên tài khoản không được để trống' : null,
+                ),
+                const SizedBox(height: 20),
 
                 // Trường Email
                 TextFormField(
@@ -82,7 +99,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     prefixIcon: const Icon(Icons.lock_reset),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  validator: (val) => val! != _passwordController.text ? 'Mật khẩu không khớp' : null,
+                  // Đặt validator đơn giản. Logic kiểm tra khớp sẽ nằm trong onPressed
+                  validator: (val) => val!.isEmpty ? 'Vui lòng xác nhận mật khẩu' : null,
                 ),
                 const SizedBox(height: 30),
 
@@ -97,9 +115,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        // Bổ sung kiểm tra mật khẩu khớp
+                        if (_passwordController.text != _confirmPasswordController.text) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Lỗi: Mật khẩu xác nhận không khớp!')),
+                          );
+                          return;
+                        }
+
                         // TODO: Thêm logic Đăng ký tại đây
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Đang xử lý đăng ký...')),
+                          SnackBar(content: Text('Đang xử lý đăng ký cho ${_emailController.text}...')),
                         );
                       }
                     },

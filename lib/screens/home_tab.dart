@@ -1,4 +1,4 @@
-// lib/screens/home_tab.dart (Phiên bản cuối)
+// lib/screens/home_tab.dart (Phiên bản đã thêm Shop Info Footer)
 
 import 'package:flutter/material.dart';
 import 'product_detail_screen.dart'; // Import để điều hướng
@@ -32,11 +32,77 @@ class HomeTab extends StatelessWidget {
         _buildSectionHeader('Khám Phá Thêm ✨', context),
         const SizedBox(height: 10),
         _buildProductGrid(context), // Truyền context
+        const SizedBox(height: 30),
+
+        // --- 5. FOOTER THÔNG TIN CỬA HÀNG ---
+        _buildShopInfoFooter(context),
       ],
     );
   }
 
   // --- WIDGET CHỨC NĂNG RIÊNG ---
+
+  // Widget Footer Thông tin Cửa hàng MỚI
+  Widget _buildShopInfoFooter(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20.0),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.deepPurple.shade50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.deepPurple.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'THÔNG TIN CỬA HÀNG FASHION STORE',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.deepPurple,
+            ),
+          ),
+          const Divider(color: Colors.deepPurple, height: 20),
+          _buildInfoRow(Icons.location_on_outlined, 'Địa chỉ:', '123 Đường XYZ, Quận 1, TP.HCM'),
+          _buildInfoRow(Icons.phone_outlined, 'Hotline:', '0901 234 567 (8h - 22h)'),
+          _buildInfoRow(Icons.email_outlined, 'Email:', 'support@fashionstore.vn'),
+          const SizedBox(height: 15),
+          const Center(
+            child: Text(
+              '© 2025 Fashion Store. All Rights Reserved.',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Widget dòng thông tin phụ trợ
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: Colors.deepPurple.shade700),
+          const SizedBox(width: 10),
+          Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 14, color: Colors.black87),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   // 1. Banner Slider (Sử dụng PageView để giả lập)
   Widget _buildBannerSliderPlaceholder() {
